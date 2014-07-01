@@ -38,13 +38,16 @@ con = utils.dbcon()
 c = con.cursor()
 
 
-c.execute('create view new_albums_only '
-          'as '
-          'select * '
-          'from {na} '
-          'inner join {ea} '
-          'on {ea}.{alb} = {na}.{alb} '
-          'and {ea}.{art} = {na}.{art}'.format(na = new_albums_tbl, ea = grabbed_albums_tbl, alb = album_field,
+c.execute('drop view new_albums_only')
+
+c.execute('create view new_albums_only\n'
+          'as\n'
+          'select {na}.{alb}, {na}.{art}\n'
+          'from {na}\n'
+          'left join {ea}\n'
+          'on {ea}.{alb} = {na}.{alb}\n'
+          'and {ea}.{art} = {na}.{art}\n'
+          'where {ea}.{alb} is null'.format(na = new_albums_tbl, ea = grabbed_albums_tbl, alb = album_field,
                                                art = artist_field))
 
 

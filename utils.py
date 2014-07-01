@@ -22,6 +22,8 @@ def drop_table(table_name):
 con = dbcon()
 c = con.cursor()
 
+
+
 # drop_table(grabbed_albums_tbl)
 # drop_table(new_albums_tbl)
 #
