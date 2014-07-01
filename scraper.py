@@ -20,6 +20,8 @@ albums_artists = list(zip(albums, artists))
 
 albums_artists_grades = dict(zip(albums_artists, grades))
 
-good_albums = list({k: v for k, v in albums_artists_grades.items() if v == 'A' or v == 'A-' or v == 'A+'}.keys())
 
-print(good_albums)
+def good_albums():
+    return list({k: v for k, v in albums_artists_grades.items() if v == 'A' or v == 'A-' or v == 'A+'}.keys())
+
+print(good_albums())
