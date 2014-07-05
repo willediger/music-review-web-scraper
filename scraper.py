@@ -5,6 +5,7 @@ from lxml import html
 import requests
 import utils
 
+text_fn = '/text()'
 
 grabbed_albums_tbl = 'grabbed_albums'
 new_albums_tbl = 'new_albums'
@@ -12,43 +13,50 @@ artist_field = 'artist_name'
 album_field = 'album_name'
 field_type = 'text'
 
+def tree(url):
+    page = requests.get(url)
+    _tree = html.fromstring(page.text)
+    return _tree
 
-page = requests.get('http://www.avclub.com/music/')
-tree = html.fromstring(page.text)
+def albums_artists(html_tree, album_xpath, artist_xpath):
+    album_list = html_tree.xpath(album_xpath + text_fn)
+    album_list = [album.strip() for album in album_list]
 
-grades = tree.xpath('//*[@id="pane-01"]/ul/li/div[1]/a/text()')
-grades = [grade.strip() for grade in grades]
+    artist_list = html_tree.xpath(artist_xpath + text_fn)
+    artist_list = [artist.strip() for artist in artist_list]
 
-albums = tree.xpath('//*[@id="pane-01"]/ul/li/div[2]/div/text()')
-albums = [album.strip() for album in albums]
+    albums_artists = list(zip(album_list, artist_list))
+    return albums_artists
 
-artists = tree.xpath('//*[@id="pane-01"]/ul/li/div[2]/h2/a/span/text()')
-artists = [artist.strip() for artist in artists]
+def album_grade(html_tree, grade_xpath):
+    grade_list = html_tree.xpath(grade_xpath + text_fn)
+    grade_list = [grade.strip() for grade in grade_list]
 
-albums_artists = list(zip(albums, artists))
+    return grade_list
 
-albums_artists_grades = dict(zip(albums_artists, grades))
-
-def good_albums():
+def good_albums(albums_artists_grades):
     return list({k: v for k, v in albums_artists_grades.items() if v == 'A' or v == 'A-' or v == 'A+'}.keys())
 
-print(good_albums())
+avclub_tree = tree('http://www.avclub.com/music/')
+avclub_albums_artists_full = albums_artists(avclub_tree, '//*[@id="pane-01"]/ul/li/div[2]/div',
+                                            '//*[@id="pane-01"]/ul/li/div[2]/h2/a/span')
+avclub_album_grades_full = album_grade(avclub_tree, '//*[@id="pane-01"]/ul/li/div[1]/a')
+avclub_albums_artists_grades = dict(zip(avclub_albums_artists_full, avclub_album_grades_full))
+avclub_good_albums = good_albums(avclub_albums_artists_grades)
+
+pf_tree = tree('http://pitchfork.com/reviews/best/albums/')
+pf_albums_artists = albums_artists(pf_tree, '//*[@id="main"]/ul/li/div[2]/a/h2',
+                                   '//*[@id="main"]/ul/li/div[2]/a/h1')
+
+all_albums_artists = avclub_good_albums + pf_albums_artists
+
+print(all_albums_artists)
+
+
 
 con = utils.dbcon()
 c = con.cursor()
 
-
-c.execute('drop view new_albums_only')
-
-c.execute('create view new_albums_only\n'
-          'as\n'
-          'select {na}.{alb}, {na}.{art}\n'
-          'from {na}\n'
-          'left join {ea}\n'
-          'on {ea}.{alb} = {na}.{alb}\n'
-          'and {ea}.{art} = {na}.{art}\n'
-          'where {ea}.{alb} is null'.format(na = new_albums_tbl, ea = grabbed_albums_tbl, alb = album_field,
-                                               art = artist_field))
 
 
 # c.executemany('insert into {t} values (?,?)'.format(t=new_albums_tbl), albums)
