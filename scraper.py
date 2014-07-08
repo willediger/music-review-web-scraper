@@ -52,7 +52,7 @@ all_albums_artists = avclub_good_albums + pf_albums_artists
 
 print(all_albums_artists)
 
-print('test')
+print('test2')
 
 # con = utils.dbcon()
 # c = con.cursor()
