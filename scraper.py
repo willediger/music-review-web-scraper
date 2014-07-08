@@ -54,8 +54,8 @@ print(all_albums_artists)
 
 print('test')
 
-con = utils.dbcon()
-c = con.cursor()
+# con = utils.dbcon()
+# c = con.cursor()
 
 
 
