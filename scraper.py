@@ -4,6 +4,7 @@ from collections import defaultdict
 from lxml import html
 import requests
 import utils
+import whatapi
 
 text_fn = '/text()'
 
@@ -52,7 +53,21 @@ all_albums_artists = avclub_good_albums + pf_albums_artists
 
 print(all_albums_artists)
 
-print('test4')
+payload = {
+    'username': 'originalogy',
+    'password': 'r6Wwxf3m6UyUsm*zz8hqvH2wnRQ7u#&$GVBjuGCu'
+}
+
+whatapi_handle = whatapi.WhatAPI(username='originalogy', password='r6Wwxf3m6UyUsm*zz8hqvH2wnRQ7u#&$GVBjuGCu')
+
+x = whatapi_handle.request("browse", searchstr="Radiohead")
+
+
+y = x['response']
+
+z = y['results']
+
+print(z)
 
 # con = utils.dbcon()
 # c = con.cursor()
