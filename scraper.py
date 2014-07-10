@@ -67,7 +67,13 @@ y = x['response']
 
 z = y['results']
 
-print(z)
+q = z[0]['torrents']
+
+seeders = [e['seeders'] for e in q]
+encoding = [e['encoding'] for e in q]
+# torrent_id =
+
+print(r)
 
 # con = utils.dbcon()
 # c = con.cursor()
