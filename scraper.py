@@ -75,6 +75,8 @@ encoding = [e['encoding'] for e in q]
 
 print(r)
 
+print('z')
+
 # con = utils.dbcon()
 # c = con.cursor()
 
