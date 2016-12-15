@@ -4,7 +4,6 @@ from collections import defaultdict
 from lxml import html
 import requests
 import utils
-import whatapi
 
 text_fn = '/text()'
 
@@ -52,35 +51,3 @@ pf_albums_artists = albums_artists(pf_tree, '//*[@id="main"]/ul/li/div[2]/a/h2',
 all_albums_artists = avclub_good_albums + pf_albums_artists
 
 print(all_albums_artists)
-
-payload = {
-    'username': 'originalogy',
-    'password': 'r6Wwxf3m6UyUsm*zz8hqvH2wnRQ7u#&$GVBjuGCu'
-}
-
-whatapi_handle = whatapi.WhatAPI(username='originalogy', password='r6Wwxf3m6UyUsm*zz8hqvH2wnRQ7u#&$GVBjuGCu')
-
-x = whatapi_handle.request("browse", searchstr="Radiohead")
-
-
-y = x['response']
-
-z = y['results']
-
-q = z[0]['torrents']
-
-seeders = [e['seeders'] for e in q]
-encoding = [e['encoding'] for e in q]
-# torrent_id =
-
-print(r)
-
-print('zx')
-
-# con = utils.dbcon()
-# c = con.cursor()
-
-
-
-# c.executemany('insert into {t} values (?,?)'.format(t=new_albums_tbl), albums)
-# con.commit()
